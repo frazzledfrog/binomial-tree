@@ -89,29 +89,17 @@
 
                 <section class="crr-section">
                     <h2>CRR Parameters</h2>
-                    <div class="crr-mode-toggle">
-                        <label class="toggle-label">
-                            <input type="radio" name="crrMode" value="auto" checked onchange="recalculate()">
-                            <span>Auto (CRR)</span>
-                        </label>
-                        <label class="toggle-label">
-                            <input type="radio" name="crrMode" value="custom" onchange="recalculate()">
-                            <span>Custom u/d</span>
-                        </label>
-                    </div>
                     <div class="crr-values">
                         <div class="crr-item">
                             <span class="crr-label">Δt</span>
                             <span class="crr-value" id="crrDt">-</span>
                         </div>
-                        <div class="crr-item crr-input-item" id="crrUItem">
-                            <label class="crr-label">u (up)</label>
-                            <input type="number" id="crrUInput" value="1.1" step="0.01" min="1" class="crr-input" disabled onchange="recalculate()">
+                        <div class="crr-item">
+                            <span class="crr-label">u (up)</span>
                             <span class="crr-value" id="crrU">-</span>
                         </div>
-                        <div class="crr-item crr-input-item" id="crrDItem">
-                            <label class="crr-label">d (down)</label>
-                            <input type="number" id="crrDInput" value="0.9" step="0.01" max="1" class="crr-input" disabled onchange="recalculate()">
+                        <div class="crr-item">
+                            <span class="crr-label">d (down)</span>
                             <span class="crr-value" id="crrD">-</span>
                         </div>
                         <div class="crr-item">

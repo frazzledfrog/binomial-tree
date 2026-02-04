@@ -3,18 +3,10 @@
 /**
  * Calculate CRR (Cox-Ross-Rubinstein) parameters
  */
-function calculateCRRParams(S, K, r, sigma, T, N, customU, customD) {
+function calculateCRRParams(S, K, r, sigma, T, N) {
     const dt = T / N;
-    let u, d;
-    
-    if (customU !== undefined && customD !== undefined) {
-        u = customU;
-        d = customD;
-    } else {
-        u = Math.exp(sigma * Math.sqrt(dt));
-        d = 1 / u;
-    }
-    
+    const u = Math.exp(sigma * Math.sqrt(dt));
+    const d = 1 / u;
     const p = (Math.exp(r * dt) - d) / (u - d);
     
     return { dt, u, d, p, discount: Math.exp(-r * dt) };
@@ -183,12 +175,10 @@ function getEarlyExerciseNodes(stockTree, optionTree, earlyExercise, N) {
  * Main pricing function - returns all results
  */
 function priceBinomialTree(params) {
-    const { S, K, r, sigma, T, N, isCall, isAmerican, isCustomUD, customU, customD } = params;
+    const { S, K, r, sigma, T, N, isCall, isAmerican } = params;
     
     // Calculate CRR parameters
-    const crr = isCustomUD 
-        ? calculateCRRParams(S, K, r, sigma, T, N, customU, customD)
-        : calculateCRRParams(S, K, r, sigma, T, N);
+    const crr = calculateCRRParams(S, K, r, sigma, T, N);
     
     // Build stock price tree
     const stockTree = buildStockTree(S, crr.u, crr.d, N);
