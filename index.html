@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bloomberg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binomial Tree Option Pricing</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>Binomial Tree Option Pricing</h1>
+                    <p>Cox-Ross-Rubinstein model for American and European options</p>
+                </div>
+                <div class="theme-selector">
+                    <label for="themeSelect">Theme:</label>
+                    <select id="themeSelect" onchange="setTheme(this.value)">
+                        <option value="bloomberg">Bloomberg</option>
+                        <option value="light">Light</option>
+                        <option value="matrix">Matrix</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="sunset">Sunset</option>
+                        <option value="pink">Pink</option>
+                        <option value="laurier">Laurier</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <section class="settings-section">
+                    <h2>Parameters</h2>
+                    <div class="settings-inputs">
+                        <div class="input-group">
+                            <label>Spot Price (S₀)</label>
+                            <input type="number" id="spotPrice" value="100" step="1" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Strike Price (K)</label>
+                            <input type="number" id="strikePrice" value="100" step="1" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Risk-Free Rate (%)</label>
+                            <input type="number" id="riskFreeRate" value="5" step="0.1" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Volatility (%)</label>
+                            <input type="number" id="volatility" value="20" step="1" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Time to Maturity (Yrs)</label>
+                            <input type="number" id="timeToMaturity" value="1" step="0.1" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Steps (1-20)</label>
+                            <input type="number" id="numSteps" value="4" min="1" max="20" step="1" onchange="recalculate()">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="option-type-section">
+                    <h2>Option Type</h2>
+                    <div class="option-toggles">
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="radio" name="optionType" value="call" checked onchange="recalculate()">
+                                <span>Call</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="radio" name="optionType" value="put" onchange="recalculate()">
+                                <span>Put</span>
+                            </label>
+                        </div>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="radio" name="exerciseStyle" value="european" checked onchange="recalculate()">
+                                <span>European</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="radio" name="exerciseStyle" value="american" onchange="recalculate()">
+                                <span>American</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="crr-section">
+                    <h2>CRR Parameters</h2>
+                    <div class="crr-values">
+                        <div class="crr-item">
+                            <span class="crr-label">Δt</span>
+                            <span class="crr-value" id="crrDt">-</span>
+                        </div>
+                        <div class="crr-item">
+                            <span class="crr-label">u (up)</span>
+                            <span class="crr-value" id="crrU">-</span>
+                        </div>
+                        <div class="crr-item">
+                            <span class="crr-label">d (down)</span>
+                            <span class="crr-value" id="crrD">-</span>
+                        </div>
+                        <div class="crr-item">
+                            <span class="crr-label">p (prob)</span>
+                            <span class="crr-value" id="crrP">-</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="results-section">
+                    <h2>Results</h2>
+                    <div class="results-values">
+                        <div class="result-item result-primary">
+                            <span class="result-label">Option Price</span>
+                            <span class="result-value" id="optionPrice">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Delta (Δ)</span>
+                            <span class="result-value" id="delta">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Gamma (Γ)</span>
+                            <span class="result-value" id="gamma">-</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="early-exercise-section" id="earlyExerciseSection" style="display: none;">
+                    <h2>Early Exercise</h2>
+                    <div id="earlyExerciseInfo"></div>
+                </section>
+            </div>
+
+            <div class="right-panel">
+                <section class="tree-section">
+                    <div class="chart-controls">
+                        <select id="exportFormat">
+                            <option value="png">PNG Image</option>
+                            <option value="csv">CSV Data</option>
+                        </select>
+                        <button id="exportBtn" class="btn-secondary" onclick="exportTree()">Export</button>
+                    </div>
+                    <div class="tree-wrapper">
+                        <canvas id="treeCanvas"></canvas>
+                    </div>
+                    <div class="tree-legend">
+                        <div class="legend-item">
+                            <span class="legend-color legend-normal"></span>
+                            <span>Hold</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color legend-exercise"></span>
+                            <span>Early Exercise</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color legend-terminal"></span>
+                            <span>Terminal</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="binomial.js"></script>
+    <script src="tree-render.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
