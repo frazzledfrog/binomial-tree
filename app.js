@@ -8,6 +8,7 @@ const elements = {
     spotPrice: null,
     strikePrice: null,
     riskFreeRate: null,
+    dividendYield: null,
     volatility: null,
     timeToMaturity: null,
     numSteps: null,
@@ -31,6 +32,7 @@ function init() {
     elements.spotPrice = document.getElementById('spotPrice');
     elements.strikePrice = document.getElementById('strikePrice');
     elements.riskFreeRate = document.getElementById('riskFreeRate');
+    elements.dividendYield = document.getElementById('dividendYield');
     elements.volatility = document.getElementById('volatility');
     elements.timeToMaturity = document.getElementById('timeToMaturity');
     elements.numSteps = document.getElementById('numSteps');
@@ -68,6 +70,7 @@ function setupEventListeners() {
         elements.spotPrice,
         elements.strikePrice,
         elements.riskFreeRate,
+        elements.dividendYield,
         elements.volatility,
         elements.timeToMaturity,
         elements.numSteps
@@ -99,13 +102,14 @@ function getParams() {
     const S = parseFloat(elements.spotPrice.value) || 100;
     const K = parseFloat(elements.strikePrice.value) || 100;
     const r = (parseFloat(elements.riskFreeRate.value) || 5) / 100;
+    const q = (parseFloat(elements.dividendYield.value) || 0) / 100;
     const sigma = (parseFloat(elements.volatility.value) || 20) / 100;
     const T = parseFloat(elements.timeToMaturity.value) || 1;
     const N = parseInt(elements.numSteps.value) || 3;
     const isCall = document.querySelector('input[name="optionType"]:checked').value === 'call';
     const isAmerican = document.querySelector('input[name="exerciseStyle"]:checked').value === 'american';
     
-    return { S, K, r, sigma, T, N: Math.min(Math.max(N, 1), 20), isCall, isAmerican };
+    return { S, K, r, q, sigma, T, N: Math.min(Math.max(N, 1), 20), isCall, isAmerican };
 }
 
 function calculate() {
