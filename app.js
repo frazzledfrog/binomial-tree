@@ -11,11 +11,10 @@ const elements = {
     volatility: null,
     timeToMaturity: null,
     numSteps: null,
+    crrU: null,
+    crrD: null,
+    crrP: null,
     crrDt: null,
-    crrUpPct: null,
-    crrUpProb: null,
-    crrDownPct: null,
-    crrDownProb: null,
     optionPrice: null,
     delta: null,
     gamma: null,
@@ -35,11 +34,10 @@ function init() {
     elements.volatility = document.getElementById('volatility');
     elements.timeToMaturity = document.getElementById('timeToMaturity');
     elements.numSteps = document.getElementById('numSteps');
+    elements.crrU = document.getElementById('crrU');
+    elements.crrD = document.getElementById('crrD');
+    elements.crrP = document.getElementById('crrP');
     elements.crrDt = document.getElementById('crrDt');
-    elements.crrUpPct = document.getElementById('crrUpPct');
-    elements.crrUpProb = document.getElementById('crrUpProb');
-    elements.crrDownPct = document.getElementById('crrDownPct');
-    elements.crrDownProb = document.getElementById('crrDownProb');
     elements.optionPrice = document.getElementById('optionPrice');
     elements.delta = document.getElementById('delta');
     elements.gamma = document.getElementById('gamma');
@@ -117,13 +115,10 @@ function calculate() {
     const result = priceBinomialTree(params);
     
     // Update CRR display
-    const upPct = (result.crr.u - 1) * 100;
-    const downPct = (result.crr.d - 1) * 100;
-    elements.crrDt.textContent = result.crr.dt.toFixed(4);
-    elements.crrUpPct.textContent = `+${upPct.toFixed(2)}% up`;
-    elements.crrUpProb.textContent = `p = ${(result.crr.p * 100).toFixed(2)}%`;
-    elements.crrDownPct.textContent = `${downPct.toFixed(2)}% down`;
-    elements.crrDownProb.textContent = `1-p = ${((1 - result.crr.p) * 100).toFixed(2)}%`;
+    elements.crrU.textContent = result.crr.u.toFixed(6);
+    elements.crrD.textContent = result.crr.d.toFixed(6);
+    elements.crrP.textContent = result.crr.p.toFixed(6);
+    elements.crrDt.textContent = result.crr.dt.toFixed(6);
     
     // Update results
     elements.optionPrice.textContent = '$' + result.price.toFixed(4);

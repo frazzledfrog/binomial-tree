@@ -642,48 +642,9 @@ tr:last-child td {
 }
 
 .crr-section .crr-values {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-
-.crr-section .crr-values .crr-item {
-    padding: 8px 16px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-}
-
-.crr-moves {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.crr-move-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 8px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    font-size: 12px;
-}
-
-.crr-move-pct {
-    color: var(--text-primary);
-    font-weight: bold;
-    min-width: 80px;
-    text-align: right;
-}
-
-.crr-move-sep {
-    color: var(--text-secondary);
-}
-
-.crr-move-prob {
-    color: var(--accent);
-    min-width: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
 }
 
 .crr-item {
