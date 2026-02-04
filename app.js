@@ -15,6 +15,8 @@ const elements = {
     crrD: null,
     crrP: null,
     crrDt: null,
+    crrUInput: null,
+    crrDInput: null,
     optionPrice: null,
     delta: null,
     gamma: null,
@@ -38,6 +40,8 @@ function init() {
     elements.crrD = document.getElementById('crrD');
     elements.crrP = document.getElementById('crrP');
     elements.crrDt = document.getElementById('crrDt');
+    elements.crrUInput = document.getElementById('crrUInput');
+    elements.crrDInput = document.getElementById('crrDInput');
     elements.optionPrice = document.getElementById('optionPrice');
     elements.delta = document.getElementById('delta');
     elements.gamma = document.getElementById('gamma');
@@ -86,6 +90,24 @@ function setupEventListeners() {
         radio.addEventListener('change', calculate);
     });
     
+    // CRR mode toggle
+    document.querySelectorAll('input[name="crrMode"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            const isCustom = document.querySelector('input[name="crrMode"]:checked').value === 'custom';
+            elements.crrUInput.disabled = !isCustom;
+            elements.crrDInput.disabled = !isCustom;
+            elements.crrU.style.display = isCustom ? 'none' : '';
+            elements.crrD.style.display = isCustom ? 'none' : '';
+            elements.crrUInput.style.display = isCustom ? '' : 'none';
+            elements.crrDInput.style.display = isCustom ? '' : 'none';
+            calculate();
+        });
+    });
+    
+    // Custom u/d inputs
+    elements.crrUInput.addEventListener('input', debounce(calculate, 150));
+    elements.crrDInput.addEventListener('input', debounce(calculate, 150));
+    
     // Theme selector
     elements.themeSelector.addEventListener('change', (e) => {
         setTheme(e.target.value);
@@ -104,8 +126,11 @@ function getParams() {
     const N = parseInt(elements.numSteps.value) || 3;
     const isCall = document.querySelector('input[name="optionType"]:checked').value === 'call';
     const isAmerican = document.querySelector('input[name="exerciseStyle"]:checked').value === 'american';
+    const isCustomUD = document.querySelector('input[name="crrMode"]:checked').value === 'custom';
+    const customU = parseFloat(elements.crrUInput.value) || 1.1;
+    const customD = parseFloat(elements.crrDInput.value) || 0.9;
     
-    return { S, K, r, sigma, T, N: Math.min(Math.max(N, 1), 20), isCall, isAmerican };
+    return { S, K, r, sigma, T, N: Math.min(Math.max(N, 1), 20), isCall, isAmerican, isCustomUD, customU, customD };
 }
 
 function calculate() {
